@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Kenangan Digital - SMA</title>
+    <!-- Google Fonts untuk kesan vintage/scrapbook -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Playfair+Display:ital,wght@0,600;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-paper: #f4ecd8;
+            --polaroid-bg: #fffdf9;
+            --text-color: #3b2f2f;
+            --accent-color: #8b5a2b;
+            --tape-color: rgba(230, 215, 170, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #2c221e;
+            background-image: radial-gradient(#3d302a 15%, transparent 16%), radial-gradient(#231b17 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            font-family: 'Playfair Display', serif;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Desain Bunga di Samping-Samping (Sudut & Tepi Halaman) */
+        .floral-decoration {
+            position: fixed;
+            width: 180px;
+            height: 180px;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.85;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23d4a373" d="M30 10 Q50 30 30 50 Q10 30 30 10 Z"/><path fill="%23faedcd" d="M50 30 Q70 50 50 70 Q30 50 50 30 Z"/><path fill="%23ccd5ae" d="M20 50 Q40 60 30 80 Q10 70 20 50 Z"/><circle cx="30" cy="30" r="8" fill="%23e9edc9"/><circle cx="50" cy="50" r="10" fill="%23dda15e"/></svg>');
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        .floral-top-left { top: 10px; left: 10px; transform: rotate(0deg); }
+        .floral-top-right { top: 10px; right: 10px; transform: rotate(90deg); }
+        .floral-bottom-left { bottom: 10px; left: 10px; transform: rotate(270deg); }
+        .floral-bottom-right { bottom: 10px; right: 10px; transform: rotate(180deg); }
+
+        /* Main Container Buku / Scrapbook */
+        .book-container {
+            width: 90%;
+            max-width: 850px;
+            background-color: var(--bg-paper);
+            background-image: linear-gradient(to right, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 5%),
+                              radial-gradient(#e3d5b8 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px;
+            border: 8px solid #5c4033;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 50px rgba(139,90,43,0.15);
+            padding: 40px 30px;
+            margin: 40px 0;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Header Buku */
+        .book-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px dashed #b08d57;
+            padding-bottom: 15px;
+        }
+
+        .book-header h1 {
+            font-family: 'Special Elite', cursive;
+            font-size: 2.5rem;
+            color: #4a3525;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .book-header p {
+            font-style: italic;
+            color: #705335;
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        /* Slider Wrapper */
+        .slider-wrapper {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .slides-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 100%;
+        }
+
+        .memory-card {
+            min-width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
+        }
+
+        @media (min-width: 768px) {
+            .memory-card {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+
+        /* Gaya Foto Polaroid */
+        .polaroid {
+            background: var(--polaroid-bg);
+            padding: 15px 15px 45px 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        .polaroid::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 25px;
+            background-color: var(--tape-color);
+            border-left: 2px dashed rgba(0,0,0,0.1);
+            border-right: 2px dashed rgba(0,0,0,0.1);
+            opacity: 0.8;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+        }
+
+        .polaroid-caption {
+            text-align: center;
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        /* Konten Catatan Scrapbook */
+        .memory-details {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px dashed #c2b292;
+            position: relative;
+        }
+
+        .memory-title {
+            font-family: 'Special Elite', cursive;
+            font-size: 1.6rem;
+            color: #5c4033;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #d4c3a3;
+            padding-bottom: 5px;
+        }
+
+        .info-group {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #6b4423;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            color: #3b2f2f;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .handwritten {
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            color: #4a3b32;
+        }
+
+        /* Tombol Navigasi Slider */
+        .slider-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 2px dashed #b08d57;
+        }
+
+        .nav-btn {
+            background-color: #6b4423;
+            color: #f4ecd8;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Special Elite', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .nav-btn:hover {
+            background-color: #8b5a2b;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .nav-btn:disabled {
+            background-color: #b5a495;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .slide-indicators {
+            font-family: 'Special Elite', cursive;
+            font-size: 1.1rem;
+            color: #5c4033;
+        }
+
+        /* Responsif untuk layar kecil */
+        @media (max-width: 600px) {
+            .book-container {
+                padding: 20px 15px;
+                width: 95%;
+            }
+            .book-header h1 {
+                font-size: 1.8rem;
+            }
+            .floral-decoration {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Elemen Dekorasi Bunga Sudut -->
+    <div class="floral-decoration floral-top-left"></div>
+    <div class="floral-decoration floral-top-right"></div>
+    <div class="floral-decoration floral-bottom-left"></div>
+    <div class="floral-decoration floral-bottom-right"></div>
+
+    <div class="book-container">
+        <header class="book-header">
+            <h1>Buku Kenangan SMA</h1>
+            <p>~ Kumpulan memori indah yang tak terlupakan ~</p>
+        </header>
+
+        <div class="slider-wrapper">
+            <div class="slides-container" id="slidesContainer">
+                
+                <!-- Kenangan 1 -->
+                <div class="memory-card">
+                    <div class="polaroid">
+                        <img src="https://raw.githubusercontent.com/gisellastarzz222-lab/buku-kenangan-/main/eaa.jpeg" alt="Kenangan 1">
+                        <div class="polaroid-caption">Istirahat di Kelas ✨</div>
+                    </div>
+                    <div class="memory-details">
+                        <div class="memory-title">Kenangan 1</div>
+                        <div class="info-group">
+                            <span class="info-label">Tanggal & Lokasi</span>
+                            <span class="info-value">30,03,2026 — Kelas</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Tokoh / Teman</span>
+                            <span class="info-value">Grisel, Ailsa, Via</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Penjelasan</span>
+                            <span class="info-value">Setelah melakukan pembelajaran yang melelahkan aku bersama teman ku duduk di depan papan tulis untuk beristirahat dan saat aku melihat ponsel tiba-tiba di pikiran ku, aku ingin mengabaikan momen ku bersama teman ku sebagai kenangan saat masa sma</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Pesan / Kesan</span>
+                            <span class="info-value handwritten">"pelajarannya sangat membosankan membuat ku mengantuk dan teman teman ku juga jadi bosan"</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kenangan 2 -->
+                <div class="memory-card">
+                    <div class="polaroid" style="transform: rotate(2deg);">
+                        <img src="https://raw.githubusercontent.com/gisellastarzz222-lab/buku-kenangan-/main/foto%20pas%20nonton%20bioskop.jpeg" alt="Kenangan 2">
+                        <div class="polaroid-caption">Nonton Bioskop 🍿</div>
+                    </div>
+                    <div class="memory-details">
+                        <div class="memory-title">Kenangan 2</div>
+                        <div class="info-group">
+                            <span class="info-label">Tanggal & Lokasi</span>
+                            <span class="info-value">30,03,2026 — Bioskop</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Tokoh / Teman</span>
+                            <span class="info-value">Grisel, Ailsa, dan Via</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Penjelasan</span>
+                            <span class="info-value">Setelah pulang sekolah kita berencana menonton film berjudul "danur: the last chapter" bersama untuk self reward setelah beberapa bulan di penuhi oleh tugas yang menumpuk</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Pesan / Kesan</span>
+                            <span class="info-value handwritten">"film horornya sangat seru dan tidak menakutkan menurut ku tetapi unnie via malah ketakutan sampai meringkuk di samping ku"</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kenangan 3 -->
+                <div class="memory-card">
+                    <div class="polaroid" style="transform: rotate(-1.5deg);">
+                        <img src="https://raw.githubusercontent.com/gisellastarzz222-lab/buku-kenangan-/main/kenangan%20di%20antartika%20fair.jpeg" alt="Kenangan 3">
+                        <div class="polaroid-caption">Antartika Fair 🎪</div>
+                    </div>
+                    <div class="memory-details">
+                        <div class="memory-title">Kenangan 3</div>
+                        <div class="info-group">
+                            <span class="info-label">Tanggal & Lokasi</span>
+                            <span class="info-value">23,05,2026 — Depan mall Sun City</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Tokoh / Teman</span>
+                            <span class="info-value">Ailsa, Via, dan Grisel</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Penjelasan</span>
+                            <span class="info-value">Di sekolah tiba-tiba mengadakan sebuah event yang bernama "Antartika fire" dan di sana terdapat sebuah pertunjukan yang menarik, semua anak juga di minta memakai seragam olahraga sebagai dress code nya dan saat sedang duduk duduk menunggu mulainya acara tersebut tiba-tiba kita ingin foto bersama untuk mengabadikan momen event tersebut</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Pesan / Kesan</span>
+                            <span class="info-value handwritten">"acaranya sangat seru sehingga kita menghabiskan 8 jam di sana"</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Tombol Navigasi Slider -->
+        <div class="slider-nav">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Sebelumnya</button>
+            <div class="slide-indicators" id="slideIndicator">1 dari 3</div>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Selanjutnya ❯</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.memory-card');
+        const totalSlides = slides.length;
+        const slidesContainer = document.getElementById('slidesContainer');
+        const slideIndicator = document.getElementById('slideIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateSlider() {
+            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+            slideIndicator.textContent = `${currentSlide + 1} dari ${totalSlides}`;
+            
+            // Mengatur status tombol aktif/nonaktif
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) {
+                currentSlide = 0;
+            } else if (currentSlide >= totalSlides) {
+                currentSlide = totalSlides - 1;
+            }
+            updateSlider();
+        }
+
+        // Inisialisasi awal tombol
+        updateSlider();
+    </script>
+</body>
+</html>
